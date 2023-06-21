@@ -1,14 +1,48 @@
 <!DOCTYPE html>
-<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">-->
-<html lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Web Page</title>
+    <meta charset="utf-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+<!--    <link rel="stylesheet" th:href="@{/css/main.css}" />-->
+    <style>
+        body {
+            /*background-image: url("@{/static/home_page.jpeg}");*/
+            background-image: url("/static/home_page.jpeg");
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+
 </head>
 <body>
-<h1 th:text="${greeting}"></h1>
-    <p>This is a test page.</p>
-    <p>Delete it from your repo before submission!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin}">Admin</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user}">User</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
+
+<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
+    Logged user: <span sec:authentication="name">?</span> |
+    Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span> |
+    <!--/* When using CSRF this needs to be a POST */-->
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <input type="submit" value="Logout"/>
+    </form>
+</div>
+
+<h1>Welcome to the home page</h1>
 </body>
 </html>
