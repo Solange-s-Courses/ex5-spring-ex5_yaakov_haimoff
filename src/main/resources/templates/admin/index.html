@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Admin</title>
     <meta charset="utf-8"/>
@@ -8,10 +7,16 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
+    <style>
+        table.table-bordered tbody tr:hover {
+            background-color: lightgray;
+        }
+    </style>
+
 </head>
 <body style="background-color: azure;">
 
-<div th:replace="~{/navbarHome::navbarHome}"></div>
+<div th:replace="~{/navbar::navbar}"></div>
 
 <h1>Hello Admin!</h1>
 
@@ -20,13 +25,15 @@
         <h2 th:case="null">No users yet!</h2>
         <div th:case="*">
             <h2 class="my-5">Users</h2>
-            <table class="table table-striped table-responsive-md">
+            <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
                     <th>Email</th>
                     <th>Password</th>
-                    <th>Enabled</th>
+                    <th>Enable/ Disable</th>
                     <th>Date Registered</th>
+                    <th>Logins</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -38,11 +45,11 @@
 
                     <td>
                         <a th:if="${userInfo.isEnabled}" th:href="@{/admin/enableDisable(email=${userInfo.getEmail})}">
-                            <i class="bi bi-toggle-on"></i>
+                            <i class="bi bi-toggle-on" style="font-size: 2rem; margin: 20px"></i>
                         </a>
 
                         <a th:unless="${userInfo.isEnabled}" th:href="@{/admin/enableDisable(email=${userInfo.getEmail})}">
-                            <i class="bi bi-toggle-off"></i>
+                            <i class="bi bi-toggle-off" style="font-size: 2rem; margin: 20px"></i>
                         </a>
                     </td>
 

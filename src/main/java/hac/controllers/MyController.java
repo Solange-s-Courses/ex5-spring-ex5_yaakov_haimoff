@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Objects;
 
 @Controller
@@ -20,15 +19,18 @@ public class MyController {
     }
 
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("role", "hello!");
+    public String index() {
         return "index";
     }
 
-    @GetMapping("/user")
-    public String userIndex(Model model) {
-        model.addAttribute("role", "hello User!");
-        return "user/index";
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about";
     }
 
     @GetMapping("/admin")
@@ -37,33 +39,34 @@ public class MyController {
         return "admin/index";
     }
 
-    @GetMapping("/admin/enableDisable")
-    public String adminEnableDisable(@RequestParam("email") String userEmail, Model model) {
-        // set user enabled to true
-        userServiceController.setUserEnabledDisabled(userEmail);
-        model.addAttribute("users", userServiceController.getRepo().findAll());
-        return "admin/index";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @PostMapping("/registered")
-    public String registerUser(Model model, String email, String password) {
-        String message = userServiceController.registerUser(email, password);
-        if (Objects.equals(message, "User registered successfully"))
-            return "login";
-        else {
-            model.addAttribute("message", "User already exists!");
-            return "register";
-        }
+    @GetMapping("/user")
+    public String userIndex(Model model) {
+        model.addAttribute("role", "hello User!");
+        return "user/index";
     }
 
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("message", "Please register!");
         return "register";
+    }
+
+    @PostMapping("/registered")
+    public String registerUser(Model model, String email, String password) {
+        boolean isRegistered = userServiceController.registerUser(email, password);
+
+        if (isRegistered) {
+            return "login";
+        } else {
+            model.addAttribute("message", "User already exists!");
+            return "register";
+        }
+    }
+
+    @GetMapping("/admin/enableDisable")
+    public String adminEnableDisable(@RequestParam("email") String userEmail, Model model) {
+        userServiceController.setUserEnabledDisabled(userEmail);
+        model.addAttribute("users", userServiceController.getRepo().findAll());
+        return "admin/index";
     }
 }

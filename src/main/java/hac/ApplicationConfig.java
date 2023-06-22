@@ -11,8 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -21,12 +20,13 @@ public class ApplicationConfig {
 
     private InMemoryUserDetailsManager manager;
 
-    private SimpleUrlAuthenticationFailureHandler failureHandler;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-    // make a constructor for the class
     public ApplicationConfig() {
         this.manager = new InMemoryUserDetailsManager();
-        this.failureHandler = new SimpleUrlAuthenticationFailureHandler("/loginPost");
     }
 
     @Bean
@@ -39,47 +39,30 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
         http
                 .cors(withDefaults())
                 .csrf(withDefaults())
-
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/403", "/", "/login", "/signup", "/registered", "/errorpage").permitAll()
+                        .requestMatchers("/", "/login", "about", "/signup", "/registered", "/403", "/errorpage").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/shared/**").hasAnyRole("USER", "ADMIN")
-                )
+                        .requestMatchers("/shared/**").hasAnyRole("USER", "ADMIN"))
                 .formLogin((form) -> form
-                                .loginPage("/login")
-                                .defaultSuccessUrl("/", true)
-//                                .failureForwardUrl("/login")
-//                                .failureHandler(customAuthenticationFailureHandler())
-                                .permitAll()
-                )
-                .logout((logout) -> logout.permitAll())
-                .exceptionHandling(
-                        (exceptionHandling) -> exceptionHandling
-                                .accessDeniedPage("/403")
-                )
-
-        ;
-
+                        .loginPage("/login")
+                        .successHandler(authenticationSuccessHandler) // Set custom authentication success handler
+                        .permitAll())
+                        .logout((logout) -> logout.permitAll())
+                        .exceptionHandling(
+                                (exceptionHandling) -> exceptionHandling
+                                        .accessDeniedPage("/403"));
         return http.build();
-
     }
 
     @Bean
-    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return failureHandler;
+    public AuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler() {
+        return new RoleBasedAuthenticationSuccessHandler();
     }
-
 
     // instead of defining open path in the method above you can do it here:
     @Bean
@@ -98,18 +81,17 @@ public class ApplicationConfig {
         System.out.println("User " + username + " was added successfully");
     }
 
-
     // Method to dynamically remove a user
     public void removeUser(String username) {
         manager.deleteUser(username);
     }
 
+    // Method to dynamically enable/disable a user
     public void enableDisableUser(String username, boolean enableDisable) {
         UserDetails user = manager.loadUserByUsername(username);
         User updatedUser = (User) User.withUserDetails(user)
                 .disabled(enableDisable)
                 .build();
         manager.updateUser(updatedUser);
-        System.out.println("User " + username + " disabled successfully");
     }
 }

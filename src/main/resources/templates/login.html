@@ -5,11 +5,17 @@
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <!--    <link rel="stylesheet" type="text/css" href="/css/login.css"> &lt;!&ndash; Include your custom CSS file here &ndash;&gt;-->
+
+    <style th:fragment="backgroundLogin">
+        body {
+            background-image: url("https://e0.pxfuel.com/wallpapers/363/232/desktop-wallpaper-3d-horror-mac-apple-background-dark-night-horror.jpg");
+            background-size: cover;
+        }
+    </style>
+
 </head>
 <body>
-
-<div th:replace="~{/navbarHome::navbarHome}"></div>
+<div th:replace="~{/navbar::navbar}"></div>
 
 <div class="container">
     <section class="vh-100 gradient-custom">
