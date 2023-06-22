@@ -23,6 +23,8 @@ public class User {
 
     private String dateRegistered;
 
+    private String recoveryPassword;
+
     @ElementCollection
     private List<String> logins = new ArrayList<>();
 
@@ -31,6 +33,7 @@ public class User {
         this.password = password;
         this.enabled = enabled;
         this.dateRegistered = dateRegistered;
+        this.recoveryPassword = "";
     }
 
     // Getters and setters for other attributes
@@ -78,6 +81,10 @@ public class User {
     public String getDateRegistered() {
         return dateRegistered;
     }
+
+    public String getRecoveryPassword() { return recoveryPassword; }
+
+    public void setRecoveryPassword(String recoveryPassword) { this.recoveryPassword = recoveryPassword; }
 
     public User() {}
 }

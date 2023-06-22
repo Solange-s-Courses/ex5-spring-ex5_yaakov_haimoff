@@ -1,4 +1,4 @@
-package hac;
+package hac.repositories;
 
 import hac.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

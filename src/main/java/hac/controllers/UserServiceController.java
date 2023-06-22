@@ -1,8 +1,8 @@
 package hac.controllers;
 
-import hac.ApplicationConfig;
+import hac.application.ApplicationConfig;
 import hac.Entity.User;
-import hac.UserRepository;
+import hac.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +46,35 @@ public class UserServiceController {
         user.setEnabled(!user.isEnabled());
         applicationConfig.enableDisableUser(email, !user.isEnabled());
         userRepository.save(user);
+    }
+
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email).get(0);
+        applicationConfig.deleteUser(email);
+        userRepository.delete(user);
+    }
+
+    public void addUserLogin(String email) {
+        User user = userRepository.findByEmail(email).get(0);
+        user.addLogin(new Date().toString());
+        userRepository.save(user);
+    }
+
+    public void updateUserRecoveryPassword(String email, String password) {
+        User user = userRepository.findByEmail(email).get(0);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    public boolean recoveryPasswordConfirmed(String email, String password) {
+        User user = userRepository.findByEmail(email).get(0);
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public void updateUserPassword(String email, String password) {
+        User user = userRepository.findByEmail(email).get(0);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        applicationConfig.changePassword(email, password);
     }
 }

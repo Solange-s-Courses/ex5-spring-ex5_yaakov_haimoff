@@ -1,8 +1,10 @@
-package hac;
+package hac.application;
 
+import hac.controllers.UserServiceController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -26,6 +28,10 @@ public class RoleBasedAuthenticationSuccessHandler extends SimpleUrlAuthenticati
             }
         }
         super.onAuthenticationSuccess(request, response, authentication);
+    }
+    @Bean
+    public LoginSuccessListener customLoginSuccessListener(UserServiceController userServiceController) {
+        return new LoginSuccessListener(userServiceController);
     }
 }
 
