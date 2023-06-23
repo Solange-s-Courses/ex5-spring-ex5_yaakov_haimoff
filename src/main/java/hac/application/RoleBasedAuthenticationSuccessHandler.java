@@ -1,6 +1,5 @@
 package hac.application;
 
-import hac.controllers.UserServiceController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,8 +29,7 @@ public class RoleBasedAuthenticationSuccessHandler extends SimpleUrlAuthenticati
         super.onAuthenticationSuccess(request, response, authentication);
     }
     @Bean
-    public LoginSuccessListener customLoginSuccessListener(UserServiceController userServiceController) {
-        return new LoginSuccessListener(userServiceController);
+    public LoginSuccessListener customLoginSuccessListener() {
+        return new LoginSuccessListener();
     }
 }
-

@@ -34,6 +34,17 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public AuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler() {
+        return new RoleBasedAuthenticationSuccessHandler();
+    }
+
+    // instead of defining open path in the method above you can do it here:
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("static/User_Icon.png");
+    }
+
+    @Bean
     public UserDetailsService userDetailsService(PasswordEncoder bCryptPasswordEncoder) {
         manager.createUser(User.withUsername("yaakovhaimoff")
                 .password(bCryptPasswordEncoder.encode("Yh160716"))
@@ -81,17 +92,6 @@ public class ApplicationConfig {
                         (exceptionHandling) -> exceptionHandling
                                 .accessDeniedPage("/403"));
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler() {
-        return new RoleBasedAuthenticationSuccessHandler();
-    }
-
-    // instead of defining open path in the method above you can do it here:
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("static/User_Icon.png");
     }
 
     // Method to dynamically add users

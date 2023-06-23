@@ -3,6 +3,8 @@ package hac.controllers;
 import hac.application.ApplicationConfig;
 import hac.Entity.User;
 import hac.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,15 +15,18 @@ import java.util.Date;
 public class UserServiceController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationConfig applicationConfig;
+    private ApplicationConfig applicationConfig;
+
+    @Autowired
+    public void setApplicationConfig(ApplicationConfig applicationConfig) {
+        this.applicationConfig = applicationConfig;
+    }
 
     @Autowired
     public UserServiceController(UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 ApplicationConfig applicationConfig) {
+                                 PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.applicationConfig = applicationConfig;
     }
 
     public boolean registerUser(String email, String password) {
@@ -40,6 +45,11 @@ public class UserServiceController {
     public UserRepository getRepo() {
         return userRepository;
     }
+
+    public Page<User> getUsersWithEmailStartingWith(String prefix, Pageable pageable) {
+        return userRepository.findByEmailStartingWith(prefix, pageable);
+    }
+
 
     public void setUserEnabledDisabled(String email) {
         User user = userRepository.findByEmail(email).get(0);
@@ -62,13 +72,13 @@ public class UserServiceController {
 
     public void updateUserRecoveryPassword(String email, String password) {
         User user = userRepository.findByEmail(email).get(0);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setRecoveryPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
 
     public boolean recoveryPasswordConfirmed(String email, String password) {
         User user = userRepository.findByEmail(email).get(0);
-        return passwordEncoder.matches(password, user.getPassword());
+        return passwordEncoder.matches(password, user.getRecoveryPassword());
     }
 
     public void updateUserPassword(String email, String password) {

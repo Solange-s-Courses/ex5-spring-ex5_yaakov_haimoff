@@ -18,8 +18,8 @@
             <span sec:authentication="name">?</span> |
             <span sec:authentication="principal.authorities">[USER, ADMIN]</span>
             <!--/* When using CSRF this needs to be a POST */-->
-            <form th:action="@{/logout}" method="post" style="display:inline">
-                <input type="submit" value="Logout"/>
+            <form th:action="@{/logout}" method="post" style="display: inline; margin-right: 10px;">
+                <input type="submit" value="Logout" />
             </form>
         </div>
     </div>

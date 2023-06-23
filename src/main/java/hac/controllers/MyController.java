@@ -1,12 +1,17 @@
 package hac.controllers;
 
+import hac.Entity.User;
 import hac.application.EmailService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -36,8 +41,17 @@ public class MyController {
     }
 
     @GetMapping("/admin")
-    public String adminIndex(Model model) {
-        model.addAttribute("users", userServiceController.getRepo().findAll());
+    public String adminIndex(Model model,
+                             @RequestParam(value = "page", defaultValue = "1") int page,
+                             @RequestParam(value = "pageSize", defaultValue = "4") int pageSize) {
+        Page<User> userPage = userServiceController.getRepo().findAll(PageRequest.of(page - 1, pageSize));
+        List<User> users = userPage.getContent();
+        int totalPages = userPage.getTotalPages();
+
+        model.addAttribute("users", users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "admin/index";
     }
 
@@ -79,6 +93,23 @@ public class MyController {
         return "admin/index";
     }
 
+    @GetMapping("/admin/searchUsers")
+    public String searchUsers(@RequestParam("query") String query, Model model,
+                              @RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "pageSize", defaultValue = "4") int pageSize) {
+        // Add the search results to the model for rendering in the view
+        Page<User> userPage = userServiceController.getUsersWithEmailStartingWith(query, PageRequest.of(page - 1, pageSize));
+        List<User> users = userPage.getContent();
+        int totalPages = userPage.getTotalPages();
+
+        model.addAttribute("users", users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
+        return "admin/index";
+    }
+
+
     @GetMapping("/forgotPassword")
     public String forgotPassword() {
         return "forgotPassword";
@@ -93,7 +124,7 @@ public class MyController {
 
     @PostMapping("/resetPassword")
     public String resetPassword(Model model, @RequestParam("email") String userEmail, @RequestParam("password") String password) {
-        if(userServiceController.recoveryPasswordConfirmed(userEmail, password)) {
+        if (userServiceController.recoveryPasswordConfirmed(userEmail, password)) {
             return "resetPassword";
         } else {
             return "confirmEmailPswd";
@@ -104,5 +135,10 @@ public class MyController {
     public String setNewPassword(@RequestParam("email") String userEmail, @RequestParam("password") String password) {
         userServiceController.updateUserPassword(userEmail, password);
         return "login";
+    }
+
+    @RequestMapping("/403")
+    public String forbidden() {
+        return "403";
     }
 }
