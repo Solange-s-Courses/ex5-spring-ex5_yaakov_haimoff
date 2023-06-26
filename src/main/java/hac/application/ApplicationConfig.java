@@ -1,5 +1,6 @@
 package hac.application;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,9 +25,9 @@ public class ApplicationConfig {
 
     private InMemoryUserDetailsManager manager;
 
-    public ApplicationConfig() {
-        this.manager = new InMemoryUserDetailsManager();
-    }
+    @Autowired
+    public ApplicationConfig() { this.manager = new InMemoryUserDetailsManager(); }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

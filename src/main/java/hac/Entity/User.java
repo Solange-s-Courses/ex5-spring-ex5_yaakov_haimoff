@@ -3,9 +3,6 @@ package hac.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 public class User {
     @Id
@@ -25,8 +22,6 @@ public class User {
 
     private String recoveryPassword;
 
-    @ElementCollection
-    private List<String> logins = new ArrayList<>();
 
     public User(String email, String password, boolean enabled, String dateRegistered) {
         this.email = email;
@@ -37,23 +32,6 @@ public class User {
     }
 
     // Getters and setters for other attributes
-
-    public List<String> getLogins() {
-        return logins;
-    }
-
-    public void setLogins(List<String> logins) {
-        this.logins = logins;
-    }
-
-    public void addLogin(String login) {
-        logins.add(login);
-    }
-
-    public void removeLogin(String login) {
-        logins.remove(login);
-    }
-
     public String getEmail() {
         return email;
     }

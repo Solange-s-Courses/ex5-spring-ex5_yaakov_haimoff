@@ -2,6 +2,8 @@ package hac.controllers;
 
 import hac.Entity.User;
 import hac.application.EmailService;
+import hac.services.ApplicationService;
+import hac.services.UserServiceController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
@@ -18,9 +20,12 @@ import java.util.List;
 public class MyController {
 
     private final UserServiceController userServiceController;
+
+    private final ApplicationService applicationService;
     private final EmailService emailService;
 
-    public MyController(UserServiceController userServiceController, EmailService emailService) {
+    public MyController(ApplicationService applicationService, UserServiceController userServiceController, EmailService emailService) {
+        this.applicationService = applicationService;
         this.userServiceController = userServiceController;
         this.emailService = emailService;
     }
@@ -72,6 +77,7 @@ public class MyController {
         boolean isRegistered = userServiceController.registerUser(email, password);
 
         if (isRegistered) {
+            applicationService.addUser(email, password, "USER");
             return "login";
         } else {
             model.addAttribute("message", "User already exists!");
@@ -81,7 +87,8 @@ public class MyController {
 
     @GetMapping("/admin/enableDisable")
     public String adminEnableDisable(@RequestParam("email") String userEmail, Model model) {
-        userServiceController.setUserEnabledDisabled(userEmail);
+        boolean userEnabled = userServiceController.setUserEnabledDisabled(userEmail);
+        applicationService.enableDisableUser(userEmail, userEnabled);
         model.addAttribute("users", userServiceController.getRepo().findAll());
         return "admin/index";
     }
@@ -89,6 +96,7 @@ public class MyController {
     @GetMapping("/admin/deleteUser")
     public String adminDelete(@RequestParam("email") String userEmail, Model model) {
         userServiceController.deleteUser(userEmail);
+        applicationService.deleteUser(userEmail);
         model.addAttribute("users", userServiceController.getRepo().findAll());
         return "admin/index";
     }
@@ -134,6 +142,7 @@ public class MyController {
     @PostMapping("/setNewPassword")
     public String setNewPassword(@RequestParam("email") String userEmail, @RequestParam("password") String password) {
         userServiceController.updateUserPassword(userEmail, password);
+        applicationService.changePassword(userEmail, password);
         return "login";
     }
 

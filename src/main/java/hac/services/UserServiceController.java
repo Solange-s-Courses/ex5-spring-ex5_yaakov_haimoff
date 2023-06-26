@@ -1,6 +1,5 @@
-package hac.controllers;
+package hac.services;
 
-import hac.application.ApplicationConfig;
 import hac.Entity.User;
 import hac.repositories.UserRepository;
 import org.springframework.data.domain.Page;
@@ -8,23 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 
 @Service
 public class UserServiceController {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
-    private ApplicationConfig applicationConfig;
 
     @Autowired
-    public void setApplicationConfig(ApplicationConfig applicationConfig) {
-        this.applicationConfig = applicationConfig;
-    }
-
-    @Autowired
-    public UserServiceController(UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder) {
+    public UserServiceController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -34,7 +27,6 @@ public class UserServiceController {
         User user = new User(email, encodedPassword, true, new Date().toString());
         try {
             userRepository.save(user);
-            applicationConfig.addUser(email, password, "USER");
             return true; // User registered successfully
         } catch (Exception e) {
             return false; // Error occurred, user not registered
@@ -51,23 +43,17 @@ public class UserServiceController {
     }
 
 
-    public void setUserEnabledDisabled(String email) {
+    public boolean setUserEnabledDisabled(String email) {
         User user = userRepository.findByEmail(email).get(0);
         user.setEnabled(!user.isEnabled());
-        applicationConfig.enableDisableUser(email, !user.isEnabled());
         userRepository.save(user);
+        return user.isEnabled();
+
     }
 
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email).get(0);
-        applicationConfig.deleteUser(email);
         userRepository.delete(user);
-    }
-
-    public void addUserLogin(String email) {
-        User user = userRepository.findByEmail(email).get(0);
-        user.addLogin(new Date().toString());
-        userRepository.save(user);
     }
 
     public void updateUserRecoveryPassword(String email, String password) {
@@ -85,6 +71,5 @@ public class UserServiceController {
         User user = userRepository.findByEmail(email).get(0);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        applicationConfig.changePassword(email, password);
     }
 }

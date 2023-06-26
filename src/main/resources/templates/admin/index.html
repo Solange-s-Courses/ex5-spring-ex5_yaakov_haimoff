@@ -74,7 +74,6 @@
                 <tr>
                     <th><i class="bi bi-envelope"></i> Email</th>
                     <th><i class="bi bi-calendar"></i> Date Registered</th>
-                    <th><i class="bi bi-list"></i> Logins</th>
                     <th><i class="bi bi-sliders"></i> Options</th>
                 </tr>
                 </thead>
@@ -87,12 +86,6 @@
                     </td>
 
                     <td th:text="${userInfo.getDateRegistered}" style="color: blue;"></td>
-
-                    <td style="color: blue; max-height: 100px; overflow-y: auto;">
-                        <ul>
-                            <li th:each="login : ${userInfo.getLogins}" th:text="${login}"></li>
-                        </ul>
-                    </td>
 
                     <td>
                         <div class="dropdown">
