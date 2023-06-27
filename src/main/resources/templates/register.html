@@ -22,25 +22,10 @@
                         <p class="text-white-50 mb-5" th:text="${message}"></p>
 
                         <form th:action="@{/registered}" method="post">
-                            <div class="form-outline form-white mb-4">
-                                <input id="typeEmailX" class="form-control form-control-lg rounded-pill"
-                                       placeholder="Email" name="email" required/>
-                                <!--                                &lt;!&ndash;                                   oninvalid="this.setCustomValidity('Please enter a valid email address')"&ndash;&gt;/>-->
-                                <label class="form-label" for="typeEmailX">Email</label>
-                            </div>
 
-                            <div class="form-outline form-white mb-4">
-                                <input id="password" type="password" class="form-control form-control-lg rounded-pill"
-                                       placeholder="Password" name="password"/>
-                                <label class="form-label" for="password">Password</label>
-                            </div>
-                            <!--                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!])[A-Za-z\d@#$!]{8,}$" required-->
-                            <!--                                   oninvalid="setCustomValidity('Please enter a valid password with at least 8 characters, including one uppercase letter, one lowercase letter, one digit, and one special character (!@#$)')"-->
-                            <!--                                   oninput="setCustomValidity('')" />-->
+                            <div th:replace="~{/emailAndPassword::email}"></div>
+                            <div th:replace="~{/emailAndPassword::password}"></div>
 
-                            <!--                            <input type="password" id="password" pattern="^(?=.*[A-Z])(?=.*[@#$!]).{8,}$" required
-                                                               oninvalid="setCustomValidity('Must be at least 8 characters long and include 1 capital letter and 1 symbol.')"
-                                                               oninput="setCustomValidity('')" />-->
                             <button class="btn btn-outline-light btn-lg px-5 rounded-pill" type="submit">Register</button>
                             <p class="mb-0">Already have an account? <a th:href="@{/login}"
                                                                         class="text-white-50 fw-bold">Login!</a></p>

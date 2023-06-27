@@ -11,6 +11,14 @@ import java.util.Collection;
 
 public class RoleBasedAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    /**
+     * This method is used to redirect the user to different pages after login based on their role.
+     * @param request - HttpServletRequest
+     * @param response - HttpServletResponse
+     * @param authentication - Authentication
+     * @throws IOException - IOException
+     * @throws ServletException - ServletException
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {

@@ -22,6 +22,11 @@ public class UserServiceController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * @param email - email
+     * @param password - password
+     * @return true if user registered successfully, false if error occurred
+     */
     public boolean registerUser(String email, String password) {
         String encodedPassword = passwordEncoder.encode(password);
         User user = new User(email, encodedPassword, true, new Date().toString());
@@ -38,11 +43,20 @@ public class UserServiceController {
         return userRepository;
     }
 
+    /**
+     * @param prefix - prefix
+     * @return true if user exists with the given prefix, false if not
+     */
     public Page<User> getUsersWithEmailStartingWith(String prefix, Pageable pageable) {
         return userRepository.findByEmailStartingWith(prefix, pageable);
     }
 
 
+    /**
+     * @param email - email
+     * this method is used to enable/disable user
+     * @return the new state of the user
+     */
     public boolean setUserEnabledDisabled(String email) {
         User user = userRepository.findByEmail(email).get(0);
         user.setEnabled(!user.isEnabled());
@@ -51,11 +65,20 @@ public class UserServiceController {
 
     }
 
+    /**
+     * @param email - email
+     * this method is used to delete user
+     */
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email).get(0);
         userRepository.delete(user);
     }
 
+    /**
+     * @param email - email
+     * @param password - password
+     * this method is used to change user password
+     */
     public void updateUserRecoveryPassword(String email, String password) {
         User user = userRepository.findByEmail(email).get(0);
         user.setRecoveryPassword(passwordEncoder.encode(password));

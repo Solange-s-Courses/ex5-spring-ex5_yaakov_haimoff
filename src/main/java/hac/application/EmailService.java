@@ -17,6 +17,12 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
+    /**
+     * Sends a simple email message to the specified email
+     * address with a randomly generated password.
+     * @param to The email address to send the message to.
+     * @return The generated password.
+     */
     public String sendSimpleMessage(String to) {
         // Generate password
         String password = generatePassword();
@@ -33,6 +39,10 @@ public class EmailService {
         return password;
     }
 
+    /**
+     * Generates a random password.
+     * @return The generated password.
+     */
     private String generatePassword() {
         // Generate a random UUID
         UUID uuid = UUID.randomUUID();

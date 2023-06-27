@@ -24,18 +24,8 @@
 
                         <form th:action="@{/resetPassword}" method="post">
 
-                            <div class="form-outline form-white mb-4">
-                                <input id="typeEmailX" class="form-control form-control-lg rounded-pill"
-                                       placeholder="Email" name="email" required/>
-                                <!--                                &lt;!&ndash;                                   oninvalid="this.setCustomValidity('Please enter a valid email address')"&ndash;&gt;/>-->
-                                <label class="form-label" for="typeEmailX">Email</label>
-                            </div>
-
-                            <div class="form-outline form-white mb-4">
-                                <input type="password" id="typePasswordX" class="form-control form-control-lg rounded-pill"
-                                       name="password" required/>
-                                <label class="form-label" for="typePasswordX">Password from email</label>
-                            </div>
+                            <div th:replace="~{/emailAndPassword::email}"></div>
+                            <div th:replace="~{/emailAndPassword::password}"></div>
 
                             <button class="btn btn-outline-light btn-lg px-5 rounded-pill" type="submit">Send</button>
                         </form>

@@ -39,12 +39,17 @@ public class ApplicationConfig {
         return new RoleBasedAuthenticationSuccessHandler();
     }
 
-    // instead of defining open path in the method above you can do it here:
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("static/User_Icon.png");
     }
 
+    /**
+     * userDetailsService - UserDetailsService
+     * this method initialize the admin
+     * @param bCryptPasswordEncoder - PasswordEncoder
+     * @return - UserDetailsService
+     */
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder bCryptPasswordEncoder) {
         manager.createUser(User.withUsername("yaakovhaimoff")
@@ -54,6 +59,11 @@ public class ApplicationConfig {
         return manager;
     }
 
+    /**
+     * this method initialize the mail service for the application
+     * getJavaMailSender - JavaMailSender
+     * @return - JavaMailSender
+     */
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -71,6 +81,13 @@ public class ApplicationConfig {
         return mailSender;
     }
 
+    /**
+     * this method sets the filter chain for the application
+     * @param http - HttpSecurity
+     * @param authenticationSuccessHandler - AuthenticationSuccessHandler
+     * @return - SecurityFilterChain
+     * @throws Exception - Exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
         http
@@ -95,7 +112,13 @@ public class ApplicationConfig {
         return http.build();
     }
 
-    // Method to dynamically add users
+    /**
+     * addUser - void
+     * this method adds users to the application manager security
+     * @param username - String
+     * @param password - String
+     * @param roles - String...
+     */
     public void addUser(String username, String password, String... roles) {
         String encodedPassword = passwordEncoder().encode(password);
         UserDetails user = User.withUsername(username)
@@ -105,12 +128,21 @@ public class ApplicationConfig {
         manager.createUser(user);
     }
 
-    // Method to dynamically remove a user
+    /**
+     * deleteUser - void
+     * this method deletes users from the application manager security
+     * @param username - String
+     */
     public void deleteUser(String username) {
         manager.deleteUser(username);
     }
 
-    // Method to dynamically enable/disable a user
+    /**
+     * enableDisableUser - void
+     * this method enable or disable users from the application manager security
+     * @param username - String
+     * @param enableDisable - boolean
+     */
     public void enableDisableUser(String username, boolean enableDisable) {
         UserDetails user = manager.loadUserByUsername(username);
         User updatedUser = (User) User.withUserDetails(user)
@@ -119,6 +151,12 @@ public class ApplicationConfig {
         manager.updateUser(updatedUser);
     }
 
+    /**
+     * changePassword - void
+     * this method changes the password of the user in the application manager security
+     * @param username - String
+     * @param newPassword - String
+     */
     public void changePassword(String username, String newPassword) {
         String encodedPassword = passwordEncoder().encode(newPassword);
         UserDetails user = User.withUsername(username)

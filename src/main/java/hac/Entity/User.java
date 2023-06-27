@@ -40,28 +40,55 @@ public class User {
         this.email = email;
     }
 
+    /**
+     * Returns the password of the user
+     * @return password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Sets the password of the user
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * Returns the state of the user
+     * @return enabled
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets the state of the user
+     * @param enabled
+     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    /**
+     * Returns the date of registration of the user
+     * @return dateRegistered
+     */
     public String getDateRegistered() {
         return dateRegistered;
     }
 
+    /**
+     * gets the recovery password of the user
+     */
     public String getRecoveryPassword() { return recoveryPassword; }
 
+    /**
+     * sets the recovery password of the user
+     * @param recoveryPassword
+     */
     public void setRecoveryPassword(String recoveryPassword) { this.recoveryPassword = recoveryPassword; }
 
     public User() {}
