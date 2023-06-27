@@ -61,8 +61,7 @@ public class UserServiceController {
         User user = userRepository.findByEmail(email).get(0);
         user.setEnabled(!user.isEnabled());
         userRepository.save(user);
-        return user.isEnabled();
-
+        return !user.isEnabled();
     }
 
     /**
